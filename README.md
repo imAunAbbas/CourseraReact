@@ -1,3 +1,9 @@
+# Coursera - Full-Stack Web Development with React
+
+### The Hong Kong University of Science and Technology
+
+## Course 2: Front-End Web Development with React
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
