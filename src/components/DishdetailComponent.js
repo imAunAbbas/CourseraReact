@@ -34,21 +34,31 @@ function RenderDish({ dish }) {
   );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
   if (comments != null) {
-    return comments.map((comment) => (
-      <ul key={comment.id} className='list-unstyled'>
-        <li className='mb-2'>{comment.comment}</li>
-        <li>
-          -- {comment.author}{' '}
-          {new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: '2-digit',
-          }).format(new Date(Date.parse(comment.date)))}
-        </li>
-      </ul>
-    ));
+    return (
+      <div className='col-12'>
+        <h4>Comments</h4>
+        <ul className='list-unstyled'>
+          {comments.map((comment) => {
+            return (
+              <li key={comments.id}>
+                <p>{comment.comment}</p>
+                <p>
+                  -- {comment.author} {' , '}
+                  {new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                  }).format(new Date(Date.parse(comment.date)))}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+        <CommentForm dishId={dishId} addComment={addComment} />
+      </div>
+    );
   } else return <div />;
 }
 
@@ -73,8 +83,11 @@ const DishDetail = (props) => {
             <RenderDish dish={props.dish} />
           </div>
           <div className='col-12 col-md-5 m-1'>
-            <RenderComments comments={props.comments} />
-            <CommentForm />
+            <RenderComments
+              comments={props.comments}
+              addComment={props.addComment}
+              dishId={props.dish.id}
+            />
           </div>
         </div>
       </div>
@@ -101,9 +114,13 @@ class CommentForm extends Component {
   }
 
   handleSubmit(values) {
-    console.log('Current State is: ' + JSON.stringify(values));
-    alert('Current State is: ' + JSON.stringify(values));
     this.toggleModal();
+    this.props.addComment(
+      this.props.dishId,
+      values.rating,
+      values.author,
+      values.comment
+    );
   }
 
   render() {
