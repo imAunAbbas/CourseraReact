@@ -8,26 +8,56 @@ import {
   Media,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
-function RenderLeader({ leader }) {
-  return (
-    <Media className='mt-5' tag='li'>
-      <Media left middle className='mr-5'>
-        <Media object src={leader.image} alt={leader.name} />
-      </Media>
-      <Media body>
-        <Media heading>{leader.name}</Media>
-        <p>{leader.designation}</p>
-        <p>{leader.description}</p>
-      </Media>
-    </Media>
-  );
-}
+import { Loading } from './LoadingComponent';
+import { baseUrl } from '../shared/baseUrl';
+import { Fade, Stagger } from 'react-animation-components';
 
 function About(props) {
-  const leaders = props.leaders.map((leader) => {
-    return <RenderLeader leader={leader} />;
-  });
+  const RenderLeaders = () => (
+    <Stagger in>
+      {props.leaders.leaders.map((leader) => {
+        return (
+          <Fade in>
+            <Media className='mt-5' tag='li'>
+              <Media left middle className='mr-5'>
+                <Media object src={baseUrl + leader.image} alt={leader.name} />
+              </Media>
+              <Media body>
+                <Media heading>{leader.name}</Media>
+                <p>{leader.designation}</p>
+                <p>{leader.description}</p>
+              </Media>
+            </Media>
+          </Fade>
+        );
+      })}
+    </Stagger>
+  );
+
+  const LeaderDetails = () => {
+    if (props.leaders.isLoading) {
+      return (
+        <div className='container'>
+          <div className='row'>
+            <Loading />
+          </div>
+        </div>
+      );
+    } else if (props.leaders.errMess) {
+      return (
+        <div className='container'>
+          <div className='row'>
+            <h4>{props.leaders.errMess}</h4>
+          </div>
+        </div>
+      );
+    } else
+      return (
+        <Media list>
+          <RenderLeaders />
+        </Media>
+      );
+  };
 
   return (
     <div className='container'>
@@ -105,7 +135,7 @@ function About(props) {
           <h2>Corporate Leadership</h2>
         </div>
         <div className='col-12'>
-          <Media list>{leaders}</Media>
+          <LeaderDetails />
         </div>
       </div>
     </div>
